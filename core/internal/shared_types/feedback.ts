@@ -1,4 +1,4 @@
-import { MarkedResult } from "./core/context.ts";
+import { MarkedResult } from "../core/types/context.ts";
 
 export type Feedback = {
 	result?: MarkedResult;
