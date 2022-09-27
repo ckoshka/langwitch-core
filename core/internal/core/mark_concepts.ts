@@ -1,19 +1,7 @@
-import { TimeEffect, use } from "../../deps.ts";
-import { ParamsReader } from "../session_inputs_type.ts";
-import { adjust, Memory, MemoryConstantsReader } from "./memory.ts";
-
-export interface ConceptData {
-	name: string;
-	timesSeen: number;
-	firstSeen: number;
-}
-
-export type Concept = Memory & ConceptData;
-
-export type CoreEffects =
-	& TimeEffect<{ hoursFromEpoch: number }>
-	& ParamsReader
-	& MemoryConstantsReader;
+import { use } from "../../deps.ts";
+import { CoreEffects } from "./effects/mod.ts";
+import { adjust } from "./memory.ts";
+import { Concept, ConceptData } from "./types/concept.ts";
 
 export const markNew = (data: { name: string }) =>
 	use<CoreEffects>().map2((f) => {

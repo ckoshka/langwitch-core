@@ -1,4 +1,4 @@
-import { int } from "../../deps.ts";
+import { int } from "../../../deps.ts";
 
 export interface BaseContext<Meta> {
 	metadata: Meta;

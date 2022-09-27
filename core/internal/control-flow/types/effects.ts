@@ -1,5 +1,5 @@
-import { Free } from "../../deps.ts";
-import { BaseContext } from "../core/context.ts";
+import { Free } from "../../../deps.ts";
+import { BaseContext } from "../../core/types/context.ts";
 
 type ConceptId = string;
 

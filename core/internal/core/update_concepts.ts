@@ -1,5 +1,6 @@
-import * as C from "./concept.ts";
-import { Database } from "../database.ts";
+import { mark } from "./mark_concepts.ts";
+import { Concept } from "./types/concept.ts";
+import { Database } from "../shared-types/database.ts";
 import { Free } from "../../deps.ts";
 
 export const getUpdatedConcepts =
@@ -7,13 +8,13 @@ export const getUpdatedConcepts =
 		Free.flatten(
 			scores.filter(([literal, _]) => db.concepts[literal]).map(
 				([literal, score]) => {
-					const concept: C.Concept = db.concepts[literal];
+					const concept: Concept = db.concepts[literal];
 					if (concept === undefined) {
 						throw new Error(
 							"One of the concepts marked was not found in the database.",
 						);
 					}
-					return C.mark(concept)(score);
+					return mark(concept)(score);
 				},
 			),
 		);

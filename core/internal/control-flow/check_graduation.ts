@@ -1,0 +1,146 @@
+import { Free, LoggerEffect, produce, TapEffect, use } from "../../deps.ts";
+import { ParamsReader } from "../shared-types/session_inputs_type.ts";
+import { StateCalculationEffects } from "./types/effects.ts";
+import { State } from "./types/state.ts";
+import {
+	updateDbWithNew,
+	updateLearnedAndKnown,
+} from "./sort_into_learned_vs_known.ts";
+import { Concept } from "../core/types/concept.ts";
+import { CoreEffects } from "../core/effects/mod.ts";
+import { Database } from "../shared-types/database.ts";
+
+const noneGraduated = (ids: string[]) => ids.length === 0;
+const atFullLearningCapacity = (max: number) =>
+	(learning: string[]) => learning.length >= max;
+
+export const findGraduated =
+(db: Database) => (currConcepts: Set<string> | Array<string>) =>
+    use<ParamsReader>().map2((f) =>
+        Array.from(currConcepts).filter((cid) => {
+            const c = db.concepts[cid];
+            return c.decayCurve > f.params.knownThreshold; //?????
+        })
+    );
+
+export const checkGraduation = <Meta>(s1: State<Meta>) =>
+	use<
+		& ParamsReader
+		& TapEffect
+		& CoreEffects // redundant
+		& StateCalculationEffects<Meta>
+		& LoggerEffect
+	>()
+		.chain(() =>
+			findGraduated(s1.db)(
+				new Set(s1.learning),
+			)
+		).chain(async (graduatedIds, f) => {
+			f.log(() => s1);
+
+			if (
+				noneGraduated(graduatedIds) &&
+				atFullLearningCapacity(f.params.maxLearnable)(
+					s1.learning,
+				)
+			) {
+				return Free.lift(s1) as never;
+			}
+
+			const cfg = f.params;
+
+			const { learning, known } = updateLearnedAndKnown(
+				s1.learning,
+				s1.known,
+				graduatedIds,
+			);
+
+			const nextIds = await f.nextConcepts.run(
+				{ knowns: known, total: cfg.maxConsiderationSize },
+			).then((ids) => ({ learning: [...learning, ...ids] }));
+
+			return updateDbWithNew(s1.db.concepts)(nextIds.learning).map(
+				(updates) => ({ updates, ...nextIds }),
+			)
+				.map(async (rec) => ({
+					queue: await f.nextContexts.run(
+						{ knowns: known, focus: new Set(rec.learning) },
+					),
+					...rec,
+				}))
+				.map((rec) => {
+					const existingIds = new Set(
+						s1.queue.map((i) => i.id),
+					);
+
+					return {
+						...rec,
+						queue: s1.queue.concat(
+							rec.queue
+								.filter((ctx) => !existingIds.has(ctx.id)),
+						),
+					};
+				})
+				.map((rec) => {
+					// update the database via immer
+
+					const concepts = produce(
+						s1.db.concepts,
+						(dbDraft: Record<string, Concept>) => {
+							rec.updates.forEach((m) => dbDraft[m.name] = m);
+						},
+					);
+
+					const s2 = <State<Meta>> {
+						...s1,
+						db: {
+							...s1.db,
+							concepts,
+						},
+						stats: {
+							learnCount: Object.values(s1.db.concepts).filter((
+								concept,
+							) => concept.firstSeen >
+								cfg.metadata.startTimestamp / 1000 /
+									60 / 60
+							).length,
+							knownCount: known.size,
+						},
+						known: Array.from(known),
+						queue: rec.queue,
+						learning: Array.from(rec.learning),
+					};
+
+					f.log(() => s2);
+
+					return s2;
+				});
+
+			// todo: make this more declarative
+			// this is an area where i notice mistakes in a lot, maybe 80% of them
+			// and i find myself constantly tweaking different parameters and
+			// changing the types of the inputs because i'm not 100% sure that
+			// they're actually behaving as expected
+			//
+			// the annoying thing is, none of these transformations are reflected
+			// in the type-system itself
+			// the "have whether the queue is non-empty reflected as a generic"
+			// was a good step, but we ended up erasing that information so as to
+			// allow for sharing of the state with the IO frontend.
+			//
+			// and there are no 'hard' conditions under which the function will
+			// fail completely, causing intermediate error-states that propagate
+			// forward, causing unpredictable behaviours, violated expectations,
+			// and invalid states.
+			// the consequence is that it's essentially as if the function is mutating
+			// the state.
+			//
+			// the only benefit of having it organised like this is
+			// that it means several different states can be "simulated"
+			// concurrently, i.e if the user is still typing an answer, we can go ahead
+			// and anticipate 0, 30, 50, 70, 100 scores, then recalculate a new state
+			// for each of them, so that there is absolutely no lag
+			//
+			// ideally we want to hide the ugly imperative execution away
+			// leaving a modifiable configuration object
+		});
