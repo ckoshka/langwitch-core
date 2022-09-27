@@ -1,5 +1,5 @@
 import { Free, LoggerEffect, produce, TapEffect, use } from "../../deps.ts";
-import { ParamsReader } from "../shared-types/session_inputs_type.ts";
+import { ParamsReader } from "../shared_types/session_inputs_type.ts";
 import { StateCalculationEffects } from "./types/effects.ts";
 import { State } from "./types/state.ts";
 import {
@@ -8,7 +8,7 @@ import {
 } from "./sort_into_learned_vs_known.ts";
 import { Concept } from "../core/types/concept.ts";
 import { CoreEffects } from "../core/effects/mod.ts";
-import { Database } from "../shared-types/database.ts";
+import { Database } from "../shared_types/database.ts";
 
 const noneGraduated = (ids: string[]) => ids.length === 0;
 const atFullLearningCapacity = (max: number) =>

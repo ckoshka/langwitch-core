@@ -1,6 +1,6 @@
 import { mark } from "./mark_concepts.ts";
 import { Concept } from "./types/concept.ts";
-import { Database } from "../shared-types/database.ts";
+import { Database } from "../shared_types/database.ts";
 import { Free } from "../../deps.ts";
 
 export const getUpdatedConcepts =

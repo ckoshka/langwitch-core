@@ -1,5 +1,5 @@
 import { Free } from "../../deps.ts";
-import { Feedback } from "../shared-types/feedback.ts";
+import { Feedback } from "../shared_types/feedback.ts";
 import { checkGraduation } from "./check_graduation.ts";
 import { markAndUpdate, updateTopContext } from "./handle_feedback.ts";
 import { refresh } from "./handle_refresh.ts";

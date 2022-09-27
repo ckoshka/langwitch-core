@@ -1,5 +1,5 @@
 import { BaseContext } from "../../core/types/context.ts";
-import { Database } from "../../shared-types/database.ts";
+import { Database } from "../../shared_types/database.ts";
 
 // the reversing of hashes should be threaded through as an IO input
 // likewise, the IO stuff like showing and receiving answers could also be handled via a Free monad

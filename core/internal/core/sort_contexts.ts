@@ -1,5 +1,5 @@
 import { Free } from "../../deps.ts";
-import { State } from "../control-flow/types/state.ts";
+import { State } from "../control_flow/types/state.ts";
 import { Concept } from "./types/concept.ts";
 import { BaseContext } from "./types/context.ts";
 import { adjust } from "./memory.ts";

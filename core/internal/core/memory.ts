@@ -1,5 +1,5 @@
 import { TimeEffect, use } from "../../deps.ts";
-import { ParamsReader } from "../shared-types/session_inputs_type.ts";
+import { ParamsReader } from "../shared_types/session_inputs_type.ts";
 import { Hours, Memory, MemoryConstantsReader } from "./types/memory.ts";
 export const calcLog = (base: number) =>
 	(x: number) => Math.log(x) / Math.log(base);

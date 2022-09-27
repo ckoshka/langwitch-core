@@ -11,8 +11,8 @@ import { markKnown } from "../core/mark_concepts.ts";
 import { sortContexts } from "../core/sort_contexts.ts";
 import { Concept } from "../core/types/concept.ts";
 import { getUpdatedConcepts } from "../core/update_concepts.ts";
-import { Feedback } from "../shared-types/feedback.ts";
-import { ParamsReader } from "../shared-types/session_inputs_type.ts";
+import { Feedback } from "../shared_types/feedback.ts";
+import { ParamsReader } from "../shared_types/session_inputs_type.ts";
 import { State } from "./types/state.ts";
 
 export const updateTopContext = <Meta>(s1: State<Meta>) =>
