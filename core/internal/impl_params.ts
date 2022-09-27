@@ -1,0 +1,16 @@
+import { ParamsReader } from "./shared_types/session_inputs_type.ts";
+
+export const implParams = () =>
+	<ParamsReader> {
+		params: ({
+			maxLearnable: 3,
+			maxPerSession: 245,
+			maxConsiderationSize: 7,
+			flexibility: 0.09,
+			initialDecay: -0.5,
+			knownThreshold: -0.4,
+			metadata: {
+				startTimestamp: new Date().getTime() - 50000,
+			},
+		}),
+	};

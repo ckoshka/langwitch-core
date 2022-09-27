@@ -3,8 +3,6 @@ export const selectPercentile =
 	<T>(float: number) => (arr: T[] | readonly T[]) =>
 		arr.slice(Math.round(arr.length * float))[0];
 
-// Chunks an array into N arrays
-
 export const time = async <T>(fn: () => Promise<T>): Promise<T> => {
 	const now = performance.now();
 	const result = await fn();
