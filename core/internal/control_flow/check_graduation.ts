@@ -1,27 +1,33 @@
-import { Free, LoggerEffect, produce, TapEffect, use } from "../../deps.ts";
-import { ParamsReader } from "../shared_types/session_inputs_type.ts";
-import { StateCalculationEffects } from "./types/effects.ts";
-import { State } from "./types/state.ts";
+import {
+	Concept,
+	CoreEffects,
+	Database,
+	Free,
+	LoggerEffect,
+	ParamsReader,
+	produce,
+	State,
+	StateCalculationEffects,
+	TapEffect,
+	use,
+} from "../../deps.ts";
 import {
 	updateDbWithNew,
 	updateLearnedAndKnown,
 } from "./sort_into_learned_vs_known.ts";
-import { Concept } from "../core/types/concept.ts";
-import { CoreEffects } from "../core/effects/mod.ts";
-import { Database } from "../shared_types/database.ts";
 
 const noneGraduated = (ids: string[]) => ids.length === 0;
-const atFullLearningCapacity = (max: number) =>
-	(learning: string[]) => learning.length >= max;
+const atFullLearningCapacity = (max: number) => (learning: string[]) =>
+	learning.length >= max;
 
 export const findGraduated =
-(db: Database) => (currConcepts: Set<string> | Array<string>) =>
-    use<ParamsReader>().map2((f) =>
-        Array.from(currConcepts).filter((cid) => {
-            const c = db.concepts[cid];
-            return c.decayCurve > f.params.knownThreshold; //?????
-        })
-    );
+	(db: Database) => (currConcepts: Set<string> | Array<string>) =>
+		use<ParamsReader>().map2((f) =>
+			Array.from(currConcepts).filter((cid) => {
+				const c = db.concepts[cid];
+				return c.decayCurve > f.params.knownThreshold; //?????
+			})
+		);
 
 export const checkGraduation = <Meta>(s1: State<Meta>) =>
 	use<

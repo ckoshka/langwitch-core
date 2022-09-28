@@ -1,8 +1,5 @@
-import { use } from "../../deps.ts";
-import { CoreEffects } from "../core/effects/mod.ts";
+import { Concept, CoreEffects, Database, use } from "../../deps.ts";
 import { predict } from "../core/memory.ts";
-import { Concept } from "../core/types/concept.ts";
-import { Database } from "../shared_types/database.ts";
 
 const sortConcepts = (concepts: Array<Concept>) =>
 	use<CoreEffects>().map2(

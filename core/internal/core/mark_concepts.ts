@@ -1,7 +1,5 @@
-import { use } from "../../deps.ts";
-import { CoreEffects } from "./effects/mod.ts";
+import { Concept, ConceptData, CoreEffects, use } from "../../deps.ts";
 import { adjust } from "./memory.ts";
-import { Concept, ConceptData } from "./types/concept.ts";
 
 export const markNew = (data: { name: string }) =>
 	use<CoreEffects>().map2((f) => {

@@ -1,7 +1,5 @@
-import { use } from "../../deps.ts";
-import { CoreEffects } from "../core/effects/mod.ts";
+import { Concept, CoreEffects, use } from "../../deps.ts";
 import { markNew } from "../core/mark_concepts.ts";
-import { Concept } from "../core/types/concept.ts";
 
 export const updateLearnedAndKnown = (
 	learnedBefore: Iterable<string>,

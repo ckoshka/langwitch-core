@@ -1,7 +1,5 @@
 import { mark } from "./mark_concepts.ts";
-import { Concept } from "./types/concept.ts";
-import { Database } from "../shared_types/database.ts";
-import { Free } from "../../deps.ts";
+import { Concept, Database, Free } from "../../deps.ts";
 
 export const getUpdatedConcepts =
 	(db: Database) => (scores: [string, number][]) =>
