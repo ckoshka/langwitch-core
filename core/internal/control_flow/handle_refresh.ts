@@ -1,18 +1,17 @@
 import { Concept, CoreEffects, Database, use } from "../../deps.ts";
-import { predict } from "../core/memory.ts";
+import { Mem } from "../core/memory.ts";
 
 const sortConcepts = (concepts: Array<Concept>) =>
 	use<CoreEffects>().map2(
-		async (f) => {
+		(f) => {
 			const known: string[] = [];
 			const learning: string[] = [];
-			await Promise.all(
-				concepts.map(async (c) =>
-					(await predict(f.now().hoursFromEpoch)(c).run(f)) > 0.3 &&
-						c.timesSeen > 2 //! sacrifices purity and also parameterisation
-						? known.push(c.name)
-						: learning.push(c.name)
-				),
+			const { predict } = Mem({ logBase: f.readLogBase() });
+			concepts.forEach((c) =>
+				predict({ when: f.now().hoursFromEpoch, memory: c }) > 0.3 &&
+					c.timesSeen > 2 //! sacrifices purity and also parameterisation
+					? known.push(c.name)
+					: learning.push(c.name)
 			);
 			return [known, learning];
 		},
