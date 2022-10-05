@@ -13,7 +13,7 @@ const sortConcepts = (concepts: Array<Concept>) =>
 					? known.push(c.name)
 					: learning.push(c.name)
 			);
-			return [known, learning];
+			return [known, learning] as [string[], string[]];
 		},
 	);
 

@@ -15,7 +15,7 @@ export const futurity = (concept: Concept) =>
 // first, add a cache table
 // then change chain/reduce to free.flatten
 export const sortContexts =
-	<Meta>(state: State<Meta>) => (ctxs: BaseContext<Meta>[]) => {
+	(state: State) => (ctxs: BaseContext[]) => {
 		const cache: Map<string, number> = new Map();
 		return Free.flatten(
 			ctxs.map((ctx) =>
@@ -41,7 +41,7 @@ export const sortContexts =
 									ctxs.concat([ctx]).findIndex((c) =>
 										c.id === ctx.id
 									))) * result,
-						] as [BaseContext<Meta>, number]
+						] as [BaseContext, number]
 					)
 			),
 		)

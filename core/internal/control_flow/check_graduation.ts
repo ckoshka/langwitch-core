@@ -29,12 +29,12 @@ export const findGraduated =
 			})
 		);
 
-export const checkGraduation = <Meta>(s1: State<Meta>) =>
+export const checkGraduation = (s1: State) =>
 	use<
 		& ParamsReader
 		& TapEffect
 		& CoreEffects // redundant
-		& StateCalculationEffects<Meta>
+		& StateCalculationEffects
 		& LoggerEffect
 	>()
 		.chain(() =>
@@ -97,7 +97,7 @@ export const checkGraduation = <Meta>(s1: State<Meta>) =>
 						},
 					);
 
-					const s2 = <State<Meta>> {
+					const s2 = <State> {
 						...s1,
 						db: {
 							...s1.db,

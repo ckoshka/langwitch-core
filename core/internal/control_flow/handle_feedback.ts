@@ -7,8 +7,8 @@ import {
 import { sortContexts } from "../core/sort_contexts.ts";
 import { getUpdatedConcepts } from "../core/update_concepts.ts";
 
-export const updateTopContext = <Meta>(s1: State<Meta>) =>
-	use<LoggerEffect>().chain(() => sortContexts<Meta>(s1)(s1.queue))
+export const updateTopContext = (s1: State) =>
+	use<LoggerEffect>().chain(() => sortContexts(s1)(s1.queue))
 		.map(
 			(res, f) => {
 				if (res.length === 0) {
@@ -25,7 +25,7 @@ export const updateTopContext = <Meta>(s1: State<Meta>) =>
 			},
 		);
 
-export const markAndUpdate = <Meta>(s1: State<Meta>) =>
+export const markAndUpdate = (s1: State) =>
 	(scores: MarkedResult) =>
 		getUpdatedConcepts(s1.db)(scores)
 			.map((toUpdate) =>
