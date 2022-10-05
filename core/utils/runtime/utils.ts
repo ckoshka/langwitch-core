@@ -1,7 +1,5 @@
-
-export const selectPercentile =
-	<T>(float: number) => (arr: T[] | readonly T[]) =>
-		arr.slice(Math.round(arr.length * float))[0];
+export const selectPercentile = <T>(float: number) =>
+	(arr: T[] | readonly T[]) => arr.slice(Math.round(arr.length * float))[0];
 
 export const time = async <T>(fn: () => Promise<T>): Promise<T> => {
 	const now = performance.now();
@@ -19,5 +17,4 @@ export const lens = <T, A>(accessor: (a0: T) => A) => (obj: T) => accessor(obj);
 export const key = <
 	T extends Record<string | number | symbol, unknown>,
 	K extends keyof T,
->(key: K) =>
-(obj: T) => obj[key];
+>(key: K) => (obj: T) => obj[key];
