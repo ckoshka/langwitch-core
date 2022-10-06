@@ -1,8 +1,8 @@
 import { Concept, ConceptData, CoreEffects, use } from "../../deps.ts";
 import { adjust } from "./memory.ts";
 
-export const markNew = (data: { name: string }) =>
-	use<CoreEffects>().map2((f) => {
+export const useMarkers = use<CoreEffects>().extendF((f) => ({
+	markNew: (data: { name: string }) => {
 		const newConcept = {
 			...data,
 			lastSeen: f.now().hoursFromEpoch,
@@ -15,15 +15,14 @@ export const markNew = (data: { name: string }) =>
 			...newConcept,
 			//lastSeen: cfg.io.currentTime() - adjustBackBy
 		};
-	});
-
-export const markKnown = (data: ConceptData) =>
-	use<CoreEffects>().map2((f) => ({
+	},
+	markKnown: (data: ConceptData) => ({
 		...data,
 		lastSeen: f.now().hoursFromEpoch,
 		decayCurve: f.params.knownThreshold / 1.8,
 		firstSeen: f.now().hoursFromEpoch,
-	}));
+	}),
+}));
 
 export const validateRange = (min: number, max: number) => (n: number) => {
 	if (n < min || n > max) {

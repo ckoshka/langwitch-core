@@ -1,5 +1,5 @@
-import { Concept, CoreEffects, use } from "../../deps.ts";
-import { markNew } from "../core/mark_concepts.ts";
+import { Concept } from "../../deps.ts";
+import { useMarkers } from "../core/mark_concepts.ts";
 
 export const updateLearnedAndKnown = (
 	learnedBefore: Iterable<string>,
@@ -17,12 +17,11 @@ export const updateLearnedAndKnown = (
 
 export const updateDbWithNew =
 	(rec: Record<string, Concept>) => (learning: Iterable<string>) =>
-		use<CoreEffects>().map2((f) =>
-			Array.from(learning).map(async (id) =>
-				rec[id] !== undefined ? rec[id] : await markNew({
+		useMarkers.map2((f) =>
+			Array.from(learning).map((id) =>
+				rec[id] !== undefined ? rec[id] : f.markNew({
 					name: id,
 				})
-					.run(f)
 			)
-		).map((p) => Promise.all(p));
+		);
 // unclear, needs revision

@@ -42,7 +42,7 @@ export const checkGraduation = (s1: State) =>
 				new Set(s1.learning),
 			)
 		).chain(async (graduatedIds, f) => {
-			f.log(() => s1);
+			f.log(s1);
 
 			if (
 				noneGraduated(graduatedIds) &&
@@ -117,7 +117,7 @@ export const checkGraduation = (s1: State) =>
 						learning: Array.from(rec.learning),
 					};
 
-					f.log(() => s2);
+					f.log(s2);
 
 					return s2;
 				});
