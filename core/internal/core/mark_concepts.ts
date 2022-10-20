@@ -19,8 +19,9 @@ export const useMarkers = use<CoreEffects>().extendF((f) => ({
 	markKnown: (data: ConceptData) => ({
 		...data,
 		lastSeen: f.now().hoursFromEpoch,
-		decayCurve: f.params.knownThreshold / 1.8,
+		decayCurve: f.params.knownThreshold / 2,
 		firstSeen: f.now().hoursFromEpoch,
+		timesSeen: 5
 	}),
 }));
 
