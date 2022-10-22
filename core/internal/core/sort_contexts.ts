@@ -10,7 +10,7 @@ export const futurity = (concept: Concept) =>
 				concept.decayCurve -
 					ifCorrect.decayCurve,
 			)
-		);
+		)
 
 // first, add a cache table
 // then change chain/reduce to free.flatten
@@ -32,12 +32,12 @@ export const sortContexts = (state: State) => (ctxs: BaseContext[]) => {
 				),
 			).map((ns) =>
 				ns.reduce((prev, curr) => prev + curr, 0) /
-				Math.pow(ctx.concepts.length, 0.3)
+				Math.pow(ctx.concepts.length, 0.2)
 			)
 				.map((result) =>
 					[
 						ctx,
-						result * positions.get(ctx.id)!,
+						result //* positions.get(ctx.id)!,
 					] as [BaseContext, number]
 				)
 		),
@@ -47,6 +47,7 @@ export const sortContexts = (state: State) => (ctxs: BaseContext[]) => {
 			if (Math.random() > 0.5) {
 				allScored = allScored.slice(0, allScored.length / 3).sort((_a, _b) => Math.random() > 0.5 ? 1 : -1).concat(allScored.slice(allScored.length / 3));
 			}
+			if (allScored[0][0] === ctxs[0]) allScored.push(allScored.shift()!)
 			// really, you'd want to randomly sort just the upper half
 			return allScored;
 		});

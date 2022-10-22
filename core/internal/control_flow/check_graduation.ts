@@ -1,5 +1,6 @@
 import {
 	Concept,
+	ConceptFilterEffect,
 	CoreEffects,
 	Database,
 	Free,
@@ -17,11 +18,11 @@ import {
 } from "./sort_into_learned_vs_known.ts";
 
 const noneGraduated = (ids: string[]) => ids.length === 0;
-const atFullLearningCapacity = (max: number) => (learning: string[]) =>
-	learning.length >= max;
+const atFullLearningCapacity = (max: number) =>
+	(learning: string[]) => learning.length >= max;
 
-export const findGraduated =
-	(db: Database) => (currConcepts: Set<string> | Array<string>) =>
+export const findGraduated = (db: Database) =>
+	(currConcepts: Set<string> | Array<string>) =>
 		use<ParamsReader>().map2((f) =>
 			Array.from(currConcepts).filter((cid) => {
 				const c = db.concepts[cid];
@@ -36,6 +37,7 @@ export const checkGraduation = (s1: State) =>
 		& CoreEffects // redundant
 		& StateCalculationEffects
 		& LoggerEffect
+		& ConceptFilterEffect
 	>()
 		.chain(() =>
 			findGraduated(s1.db)(
@@ -63,7 +65,7 @@ export const checkGraduation = (s1: State) =>
 
 			const nextIds = await f.nextConcepts.run(
 				{ knowns: known, total: cfg.maxConsiderationSize },
-			).then((ids) => ({ learning: [...learning, ...ids] }));
+			).then((ids) => ({ learning: f.filterConcepts([...learning, ...ids], f.params.maxLearnable - s1.learning.length) }));
 
 			return updateDbWithNew(s1.db.concepts)(nextIds.learning).map(
 				(updates) => ({ updates, ...nextIds }),
